@@ -10,11 +10,16 @@ import SwiftUI
 import MapKit
 
 struct ContentView: View {
+    
     @StateObject var viewModel = LocationViewModel()
+    
     @State private var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194),
         span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
     )
+    
+    // Zoom step
+       let zoomStep = 0.02
     
     var body: some View {
         ZStack {
@@ -39,8 +44,43 @@ struct ContentView: View {
                         }
                     }
                 }
+    
             }
 //                .mapStyle(.hybrid(elevation:.realistic))
+            
+            VStack{
+                Button("+"){
+                    zoomIn()
+                }
+                
+                .padding()
+                .frame(width: 50, height: 50)
+                .background(Color.blue.opacity(2))
+                .foregroundColor(.white)
+                .clipShape(Circle())
+                .shadow(radius: 4)
+                .font(.title)
+                .bold()
+               
+                
+                Button("-"){
+                    zoomOut()
+                }
+                .padding()
+                .frame(width: 50, height: 50)
+                .background(Color.blue.opacity(2))
+                .foregroundColor(.white)
+                .clipShape(Circle())
+                .shadow(radius: 4)
+                .font(.title)
+                .bold()
+                
+                  
+                
+            }
+            .padding(.leading, 300)
+            .padding(.top, -350)
+                
             
                 .overlay(
                     Group {
@@ -68,13 +108,16 @@ struct ContentView: View {
                     }) {
                         Image(systemName: "location.fill")
                             .padding()
-                            .background(Color.orange)
+                            .background(Color.blue)
                             .foregroundColor(.white)
                             .clipShape(Circle())
                             .shadow(radius: 4)
                     }
                     .padding()
                 }
+                .padding(.bottom, 120)
+                .padding(.horizontal, 5)
+                
             }
             
             // Cancel route button when pin is selected
@@ -118,12 +161,35 @@ struct ContentView: View {
                     .cornerRadius(12)
                     .shadow(radius: 5)
                     .padding(.horizontal)
-                    .padding(.bottom, 75)
+                    .padding(.bottom, 32)
                 }
             }
         }
         
     }
+    // Zoom in function
+        private func zoomIn() {
+            var newLatitudeDelta = region.span.latitudeDelta - zoomStep
+            var newLongitudeDelta = region.span.longitudeDelta - zoomStep
+            
+            // Minimum zoom level to avoid zooming too close
+            newLatitudeDelta = max(newLatitudeDelta, 0.005)
+            newLongitudeDelta = max(newLongitudeDelta, 0.005)
+            
+            region.span = MKCoordinateSpan(latitudeDelta: newLatitudeDelta, longitudeDelta: newLongitudeDelta)
+        }
+        
+        // Zoom out function
+        private func zoomOut() {
+            var newLatitudeDelta = region.span.latitudeDelta + zoomStep
+            var newLongitudeDelta = region.span.longitudeDelta + zoomStep
+            
+            // Maximum zoom level to avoid zooming too far
+            newLatitudeDelta = min(newLatitudeDelta, 1.5)
+            newLongitudeDelta = min(newLongitudeDelta, 1.5)
+            
+            region.span = MKCoordinateSpan(latitudeDelta: newLatitudeDelta, longitudeDelta: newLongitudeDelta)
+        }
 }
 
 
