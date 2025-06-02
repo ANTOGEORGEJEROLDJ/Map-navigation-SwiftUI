@@ -1,3 +1,5 @@
+
+
 //
 //  ContentView.swift
 //  MapKit SwiftUI
@@ -18,8 +20,7 @@ struct ContentView: View {
         span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
     )
     
-    // Zoom step
-       let zoomStep = 0.02
+    let zoomStep = 0.02
     
     var body: some View {
         ZStack {
@@ -30,7 +31,11 @@ struct ContentView: View {
                 annotationItems: viewModel.locations) { location in
                 MapAnnotation(coordinate: location.coordinate) {
                     Button {
-                        viewModel.selectedLocation = location
+                        withAnimation {
+                            viewModel.selectedLocation = location
+                            region.center = location.coordinate
+                            region.span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01) // zoom in
+                        }
                     } label: {
                         VStack {
                             Image(systemName: "mappin.circle.fill")
@@ -44,57 +49,25 @@ struct ContentView: View {
                         }
                     }
                 }
-    
             }
-//                .mapStyle(.hybrid(elevation:.realistic))
+//            .ignoresSafeArea()
             
-            VStack{
-                Button("+"){
-                    zoomIn()
-                }
-                
-                .padding()
-                .frame(width: 50, height: 50)
-                .background(Color.blue.opacity(2))
-                .foregroundColor(.white)
-                .clipShape(Circle())
-                .shadow(radius: 4)
-                .font(.title)
-                .bold()
-               
-                
-                Button("-"){
-                    zoomOut()
-                }
-                .padding()
-                .frame(width: 50, height: 50)
-                .background(Color.blue.opacity(2))
-                .foregroundColor(.white)
-                .clipShape(Circle())
-                .shadow(radius: 4)
-                .font(.title)
-                .bold()
-                
-                  
-                
-            }
-            .padding(.leading, 300)
-            .padding(.top, -350)
-                
             
-                .overlay(
-                    Group {
-                        if let route = viewModel.route {
-                            MapOverLay(route: route)
-                        }
-                    }
-                )
-                .onAppear {
-                    if let userLoc = viewModel.userLocation {
-                        region.center = userLoc
+            
+            // Route overlay
+            .overlay(
+                Group {
+                    if let route = viewModel.route {
+                        MapOverLay(route: route)
                     }
                 }
-                .ignoresSafeArea()
+            )
+            .onAppear {
+                if let userLoc = viewModel.userLocation {
+                    region.center = userLoc
+                }
+            }
+            .ignoresSafeArea()
             
             // Live location button
             VStack {
@@ -117,85 +90,132 @@ struct ContentView: View {
                 }
                 .padding(.bottom, 120)
                 .padding(.horizontal, 5)
-                
             }
             
-            // Cancel route button when pin is selected
+            // Zoom In/Out Buttons
+            VStack {
+                Button("+") {
+                    zoomIn()
+                }
+                .padding()
+                .frame(width: 50, height: 50)
+                .background(Color.blue.opacity(0.8))
+                .foregroundColor(.white)
+                .clipShape(Circle())
+                .shadow(radius: 4)
+                .font(.title)
+                .bold()
+                
+                Button("-") {
+                    zoomOut()
+                }
+                .padding()
+                .frame(width: 50, height: 50)
+                .background(Color.blue.opacity(0.8))
+                .foregroundColor(.white)
+                .clipShape(Circle())
+                .shadow(radius: 4)
+                .font(.title)
+                .bold()
+            }
+            .padding(.leading, 300)
+            .padding(.top, -350)
+            
+            // Floating shop card
             if let selected = viewModel.selectedLocation {
                 VStack {
                     Spacer()
                     HStack {
-                        VStack(alignment: .leading) {
-                            Text("Navigating to:")
-                                .font(.caption)
-                                .foregroundColor(.gray)
+                        VStack(alignment: .leading, spacing: 4) {
                             Text(selected.name)
                                 .font(.headline)
+                                .foregroundColor(.primary)
+                            Text(selected.address)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
                         }
                         Spacer()
-                        Button("Navigate") {
-                            viewModel.getRoute(to: selected.coordinate)
-                        }
-                        .frame(width: 70)
-                        .padding(.horizontal)
-                        .padding(.vertical, 8)
-                        .background(Color.green.opacity(7))
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
-                        
-                        
-                        Button("Cancel") {
-                            viewModel.selectedLocation = nil
-                            viewModel.route = nil
-                        }
-                        .frame(width: 70)
-                        .padding(.horizontal)
-                        .padding(.vertical, 8)
-                        .background(Color.red.opacity(7))
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
-                        
                     }
                     .padding()
-                    .background(Color.white)
-                    .cornerRadius(12)
-                    .shadow(radius: 5)
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(16)
+                    .shadow(radius: 4)
                     .padding(.horizontal)
-                    .padding(.bottom, 32)
+                    .padding(.bottom, 250)
                 }
+                .transition(.move(edge: .bottom))
             }
-        }
-        
-    }
-    // Zoom in function
-        private func zoomIn() {
-            var newLatitudeDelta = region.span.latitudeDelta - zoomStep
-            var newLongitudeDelta = region.span.longitudeDelta - zoomStep
             
-            // Minimum zoom level to avoid zooming too close
-            newLatitudeDelta = max(newLatitudeDelta, 0.005)
-            newLongitudeDelta = max(newLongitudeDelta, 0.005)
-            
-            region.span = MKCoordinateSpan(latitudeDelta: newLatitudeDelta, longitudeDelta: newLongitudeDelta)
-        }
-        
-        // Zoom out function
-        private func zoomOut() {
-            var newLatitudeDelta = region.span.latitudeDelta + zoomStep
-            var newLongitudeDelta = region.span.longitudeDelta + zoomStep
-            
-            // Maximum zoom level to avoid zooming too far
-            newLatitudeDelta = min(newLatitudeDelta, 1.5)
-            newLongitudeDelta = min(newLongitudeDelta, 1.5)
-            
-            region.span = MKCoordinateSpan(latitudeDelta: newLatitudeDelta, longitudeDelta: newLongitudeDelta)
-        }
-}
+           
+            // Floating card + Route Buttons
+                        if let selected = viewModel.selectedLocation {
+                            VStack {
+                                Spacer()
+                                VStack(alignment: .leading) {
+//                                    HStack {
+//                                        VStack(alignment: .leading, spacing: 4) {
+//                                            Text(selected.name)
+//                                                .font(.headline)
+//                                            Text(selected.address)
+//                                                .font(.subheadline)
+//                                                .foregroundColor(.gray)
+//                                                .lineLimit(1)
+//                                        }
+//                                        Spacer()
+//                                    }
 
+                                    HStack {
+                                        Button("Navigate") {
+                                            viewModel.getRoute(to: selected.coordinate)
+                                        }
+                                        .frame(width: 100)
+                                        .padding(.vertical, 8)
+                                        .background(Color.green)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(8)
+
+                                        Button("Cancel") {
+                                            viewModel.selectedLocation = nil
+                                            viewModel.route = nil
+                                        }
+                                        .frame(width: 100)
+                                        .padding(.vertical, 8)
+                                        .background(Color.red)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(8)
+                                    }
+                                }
+                                .padding()
+                                .background(.ultraThinMaterial)
+                                .cornerRadius(16)
+                                .shadow(radius: 5)
+                                .padding(.horizontal)
+                                .padding(.bottom, 40)
+                            }
+                            .transition(.move(edge: .bottom))
+                        }
+                    }
+                }
+            
+    
+    private func zoomIn() {
+        var newLatitudeDelta = region.span.latitudeDelta - zoomStep
+        var newLongitudeDelta = region.span.longitudeDelta - zoomStep
+        newLatitudeDelta = max(newLatitudeDelta, 0.005)
+        newLongitudeDelta = max(newLongitudeDelta, 0.005)
+        region.span = MKCoordinateSpan(latitudeDelta: newLatitudeDelta, longitudeDelta: newLongitudeDelta)
+    }
+
+    private func zoomOut() {
+        var newLatitudeDelta = region.span.latitudeDelta + zoomStep
+        var newLongitudeDelta = region.span.longitudeDelta + zoomStep
+        newLatitudeDelta = min(newLatitudeDelta, 1.5)
+        newLongitudeDelta = min(newLongitudeDelta, 1.5)
+        region.span = MKCoordinateSpan(latitudeDelta: newLatitudeDelta, longitudeDelta: newLongitudeDelta)
+    }
+}
 
 #Preview {
     ContentView()
 }
-
-
-

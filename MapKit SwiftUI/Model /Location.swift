@@ -11,6 +11,7 @@ import CoreLocation
 struct Location: Identifiable, Codable {
     let id = UUID()
     let name: String
+    let address: String
     let latitude: Double
     let longitude: Double
 
