@@ -41,16 +41,15 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
 
     func getRoute(to destination: CLLocationCoordinate2D) {
-        guard let sourceCoordinate = userLocation else { return }
-        let sourcePlacemark = MKPlacemark(coordinate: sourceCoordinate)
-        let destPlacemark = MKPlacemark(coordinate: destination)
+        guard let userLocation = userLocation else { return }
 
         let request = MKDirections.Request()
-        request.source = MKMapItem(placemark: sourcePlacemark)
-        request.destination = MKMapItem(placemark: destPlacemark)
+        request.source = MKMapItem(placemark: MKPlacemark(coordinate: userLocation))
+        request.destination = MKMapItem(placemark: MKPlacemark(coordinate: destination))
         request.transportType = .automobile
 
-        MKDirections(request: request).calculate { response, error in
+        let directions = MKDirections(request: request)
+        directions.calculate { response, error in
             if let route = response?.routes.first {
                 DispatchQueue.main.async {
                     self.route = route
@@ -58,57 +57,15 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
             }
         }
     }
+
+    func clearSelection() {
+        selectedLocation = nil
+        route = nil
+    }
+
 }
 
 
 
 
 
-
-//import Foundation
-//import CoreLocation
-//import UIKit
-//import MapKit
-//
-//
-//class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
-//    @Published var userLocation: CLLocationCoordinate2D?
-//    @Published var locations: [Location] = []
-//    
-//    private let manager = CLLocationManager()
-//
-//    override init() {
-//        super.init()
-//        manager.delegate = self
-//        manager.desiredAccuracy = kCLLocationAccuracyBest
-//        manager.requestWhenInUseAuthorization()
-//        manager.startUpdatingLocation()
-//        loadLocations()
-//    }
-//
-//    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-//        guard let coordinate = locations.first?.coordinate else { return }
-//        DispatchQueue.main.async {
-//            self.userLocation = coordinate
-//        }
-//    }
-//
-//    private func loadLocations() {
-//        guard let url = Bundle.main.url(forResource: "locations", withExtension: "json") else { return }
-//        do {
-//            let data = try Data(contentsOf: url)
-//            self.locations = try JSONDecoder().decode([Location].self, from: data)
-//        } catch {
-//            print("Error decoding locations: \(error)")
-//        }
-//    }
-//
-//    func openInMaps(_ location: Location) {
-//        let placemark = MKPlacemark(coordinate: location.coordination)
-//        let mapItem = MKMapItem(placemark: placemark)
-//        mapItem.name = location.name
-//        mapItem.openInMaps(launchOptions: [
-//            MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
-//        ])
-//    }
-//}

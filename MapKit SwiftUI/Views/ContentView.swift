@@ -15,7 +15,7 @@ struct ContentView: View {
         center: CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194),
         span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
     )
-
+    
     var body: some View {
         ZStack {
             // Map View
@@ -26,7 +26,6 @@ struct ContentView: View {
                 MapAnnotation(coordinate: location.coordinate) {
                     Button {
                         viewModel.selectedLocation = location
-                        viewModel.getRoute(to: location.coordinate)
                     } label: {
                         VStack {
                             Image(systemName: "mappin.circle.fill")
@@ -41,20 +40,22 @@ struct ContentView: View {
                     }
                 }
             }
-            .overlay(
-                Group {
-                    if let route = viewModel.route {
-                        MapOverLay(route: route)
+//                .mapStyle(.hybrid(elevation:.realistic))
+            
+                .overlay(
+                    Group {
+                        if let route = viewModel.route {
+                            MapOverLay(route: route)
+                        }
+                    }
+                )
+                .onAppear {
+                    if let userLoc = viewModel.userLocation {
+                        region.center = userLoc
                     }
                 }
-            )
-            .onAppear {
-                if let userLoc = viewModel.userLocation {
-                    region.center = userLoc
-                }
-            }
-            .ignoresSafeArea()
-
+                .ignoresSafeArea()
+            
             // Live location button
             VStack {
                 Spacer()
@@ -75,7 +76,7 @@ struct ContentView: View {
                     .padding()
                 }
             }
-
+            
             // Cancel route button when pin is selected
             if let selected = viewModel.selectedLocation {
                 VStack {
@@ -88,29 +89,43 @@ struct ContentView: View {
                             Text(selected.name)
                                 .font(.headline)
                         }
+                        Spacer()
+                        Button("Navigate") {
+                            viewModel.getRoute(to: selected.coordinate)
+                        }
+                        .frame(width: 70)
+                        .padding(.horizontal)
+                        .padding(.vertical, 8)
+                        .background(Color.green.opacity(7))
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                        
                         
                         Button("Cancel") {
                             viewModel.selectedLocation = nil
                             viewModel.route = nil
                         }
+                        .frame(width: 70)
                         .padding(.horizontal)
                         .padding(.vertical, 8)
-                        .background(Color.red)
+                        .background(Color.red.opacity(7))
                         .foregroundColor(.white)
                         .cornerRadius(8)
+                        
                     }
                     .padding()
                     .background(Color.white)
                     .cornerRadius(12)
                     .shadow(radius: 5)
                     .padding(.horizontal)
-                    .padding(.bottom, 70)
-                    
+                    .padding(.bottom, 75)
                 }
             }
         }
+        
     }
 }
+
 
 #Preview {
     ContentView()
@@ -118,52 +133,3 @@ struct ContentView: View {
 
 
 
-//import SwiftUI
-//import MapKit
-//
-//struct ContentView: View {
-//    @StateObject var viewModel = LocationViewModel()
-//    @State private var region = MKCoordinateRegion(
-//        center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
-//        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-//    )
-//
-//    var body: some View {
-//        ZStack {
-//            if let _ = viewModel.userLocation {
-//                Map(coordinateRegion: $region,
-//                    showsUserLocation: true,
-//                    annotationItems: viewModel.locations) { location in
-//                    MapAnnotation(coordinate: location.coordination) {
-//                        Button {
-//                            viewModel.openInMaps(location)
-//                        } label: {
-//                            VStack {
-//                                Image(systemName: "mappin.circle.fill")
-//                                    .foregroundColor(.red)
-//                                    .font(.title)
-//                                Text(location.name)
-//                                    .font(.caption)
-//                                    .padding(4)
-//                                    .background(.white)
-//                                    .cornerRadius(5)
-//                            }
-//                        }
-//                    }
-//                }
-//                .onAppear {
-//                    if let userLoc = viewModel.userLocation {
-//                        region.center = userLoc
-//                    }
-//                }
-//                .edgesIgnoringSafeArea(.all)
-//            } else {
-//                ProgressView("Loading location...")
-//            }
-//        }
-//    }
-//}
-//
-//#Preview {
-//    ContentView()
-//}
