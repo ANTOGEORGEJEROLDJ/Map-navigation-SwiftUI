@@ -1,0 +1,45 @@
+
+[
+  {
+    "name": "Philz Coffee",
+    "latitude": 37.3230,
+    "longitude": -122.0322,
+    "address": "20686 Stevens Creek Blvd (at S De Anza Blvd), Cupertino, CA 95014",
+    "website": "http://www.philzcoffee.com"
+  },
+  {
+    "name": "Voyager Craft Coffee",
+    "latitude": 37.3233,
+    "longitude": -122.0308,
+    "address": "20807 Stevens Creek Blvd (at Saich Way), Cupertino, CA 95014",
+    "website": "https://www.voyagercraftcoffeeorders.com"
+  },
+  {
+    "name": "Nirvana Soul",
+    "latitude": 37.3161,
+    "longitude": -122.0288,
+    "address": "19700 Vallco Pkwy (at Wolfe Rd), Cupertino, CA 95014",
+    "website": "https://www.nirvanasoulcoffee.com"
+  },
+  {
+    "name": "Peet's Coffee & Tea",
+    "latitude": 37.3237,
+    "longitude": -122.0419,
+    "address": "22350 Homestead Rd, Cupertino, CA 95014",
+    "website": "https://locations.peets.com/ll/US/CA/Cupertino/22350-Homestead-Rd"
+  },
+  {
+    "name": "Bitter + Sweet",
+    "latitude": 37.3193,
+    "longitude": -122.0297,
+    "address": "20560 Town Center Ln (at De Anza Blvd), Cupertino, CA 95014",
+    "website": "https://www.bitter-sweet.com"
+  },
+  {
+    "name": "Fantasia Coffee & Tea",
+    "latitude": 37.3195,
+    "longitude": -122.0346,
+    "address": "10933 N Wolfe Rd (at Homestead Rd), Cupertino, CA 95014",
+    "website": "https://fantasia-x.com/shop"
+  }
+]
