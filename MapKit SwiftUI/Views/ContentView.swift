@@ -14,6 +14,8 @@ import MapKit
 struct ContentView: View {
     
     @StateObject var viewModel = LocationViewModel()
+    @State private var showFloatingCard = true
+
     
     @State private var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194),
@@ -35,6 +37,8 @@ struct ContentView: View {
                             viewModel.selectedLocation = location
                             region.center = location.coordinate
                             region.span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01) // zoom in
+                            showFloatingCard = true // <--- this brings back the card
+
                         }
                     } label: {
                         VStack {
@@ -122,7 +126,7 @@ struct ContentView: View {
             .padding(.top, -350)
             
             // Floating shop card
-            if let selected = viewModel.selectedLocation {
+            if let selected = viewModel.selectedLocation,showFloatingCard {
                 VStack {
                     Spacer()
                     HStack {
@@ -138,7 +142,7 @@ struct ContentView: View {
                         Spacer()
                     }
                     .padding()
-                    .background(.ultraThinMaterial)
+                    .background(.white.opacity(5))
                     .cornerRadius(16)
                     .shadow(radius: 4)
                     .padding(.horizontal)
@@ -168,6 +172,8 @@ struct ContentView: View {
                                     HStack {
                                         Button("Navigate") {
                                             viewModel.getRoute(to: selected.coordinate)
+                                            showFloatingCard = false
+                                            
                                         }
                                         .frame(width: 100)
                                         .padding(.vertical, 8)
@@ -178,6 +184,7 @@ struct ContentView: View {
                                         Button("Cancel") {
                                             viewModel.selectedLocation = nil
                                             viewModel.route = nil
+                                            showFloatingCard = false
                                         }
                                         .frame(width: 100)
                                         .padding(.vertical, 8)
