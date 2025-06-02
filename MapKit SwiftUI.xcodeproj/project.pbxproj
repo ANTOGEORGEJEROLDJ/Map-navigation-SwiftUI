@@ -44,7 +44,6 @@
 		4E3DCBA72DED85810099D8FC /* MapKit_SwiftUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKit_SwiftUIApp.swift; sourceTree = "<group>"; };
 		4E3DCBAD2DED85A60099D8FC /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		4E3DCBB12DED88AF0099D8FC /* LocationViewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewModels.swift; sourceTree = "<group>"; };
-		4E53049A2DED93010080AF35 /* MapKit-SwiftUI-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "MapKit-SwiftUI-Info.plist"; sourceTree = SOURCE_ROOT; };
 		4E53049D2DED96670080AF35 /* locations.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = locations.json; sourceTree = "<group>"; };
 		4E53049F2DED97C00080AF35 /* mapLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = mapLine.swift; sourceTree = "<group>"; };
 		4E5304A32DED9E310080AF35 /* MapOverLay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapOverLay.swift; sourceTree = "<group>"; };
@@ -162,7 +161,6 @@
 		4E3DCBA82DED85810099D8FC /* MapKit SwiftUI */ = {
 			isa = PBXGroup;
 			children = (
-				4E53049A2DED93010080AF35 /* MapKit-SwiftUI-Info.plist */,
 				4E3DCBA12DED85810099D8FC /* Model  */,
 				4E3DCBA22DED85810099D8FC /* ViewModel */,
 				4E3DCBA42DED85810099D8FC /* Views */,

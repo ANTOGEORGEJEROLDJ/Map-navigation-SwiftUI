@@ -88,7 +88,7 @@ struct ContentView: View {
                             Text(selected.name)
                                 .font(.headline)
                         }
-                        Spacer()
+                        
                         Button("Cancel") {
                             viewModel.selectedLocation = nil
                             viewModel.route = nil
@@ -104,7 +104,8 @@ struct ContentView: View {
                     .cornerRadius(12)
                     .shadow(radius: 5)
                     .padding(.horizontal)
-                    .padding(.bottom, 60)
+                    .padding(.bottom, 70)
+                    
                 }
             }
         }
